@@ -1,0 +1,138 @@
+<!-- DOCTYPE HTML -->
+<html>
+<head>
+<title>React Calculator</title>
+</head>
+<body>
+<div id="content"></div>
+<script src="https://fb.me/react-0.14.6.js"></script>
+<script src="https://fb.me/react-dom-0.14.6.js"></script>
+<script src="http://fb.me/JSXTransformer-0.12.1.js"></script>
+<script type="text/jsx">
+
+'use strict';
+var 
+InputButton = React.createClass({
+	render: function () {
+		return (
+			<input type="submit" value={this.props.value} onClick={this.props.operation} />
+		);
+	}
+});
+var Inputs = React.createClass({
+	render: function () {
+		return(
+			<div className="Inputs">
+				<table>
+					<tbody>
+						<tr>
+							<td><InputButton value="7" operation={this.props.updateValues} /></td>
+							<td><InputButton value="8" operation={this.props.updateValues} /></td>
+							<td><InputButton value="9" operation={this.props.updateValues} /></td>
+							<td><InputButton value="+" operation={this.props.updateValues} /></td>
+							<td><InputButton value="Backspace" operation={this.props.backSpace}/></td>
+						</tr>
+						<tr>
+							<td><InputButton value="4" operation={this.props.updateValues} /></td>
+							<td><InputButton value="5" operation={this.props.updateValues} /></td>
+							<td><InputButton value="6" operation={this.props.updateValues} /></td>
+							<td><InputButton value="-" operation={this.props.updateValues} /></td>
+							<td><InputButton value="Clear" operation={this.props.clear}/></td>
+						</tr>
+						<tr>
+							<td><InputButton value="3" operation={this.props.updateValues} /></td>
+							<td><InputButton value="2" operation={this.props.updateValues} /></td>
+							<td><InputButton value="1" operation={this.props.updateValues} /></td>
+							<td><InputButton value="*" operation={this.props.updateValues} /></td>
+							<td></td>
+						</tr>
+						<tr>
+							<td><InputButton value="." operation={this.props.updateValues} /></td>
+							<td><InputButton value="0" operation={this.props.updateValues} /></td>
+							<td></td>
+							<td><InputButton value="/" operation={this.props.updateValues} /></td>
+							<td><InputButton value="Enter" operation={this.props.calculate}/></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		);
+	}
+});
+
+var Display = React.createClass({
+	render: function () {
+		return (<h1>{this.props.text}</h1>);
+	}
+});
+
+var Calculator = React.createClass({
+	getInitialState: function () {
+		return {
+			dirty: '0',
+			text: '0',
+		};
+	},
+
+		//add to values to create calculatable equation
+	updateValues: function (event) {
+		if (this.state.dirty === '0') {
+			return this.setState({
+				dirty: '1',
+				text: event.target.value,
+			});
+		} else {
+			this.setState({
+				text: this.state.text.concat([event.target.value]),
+			});
+		}
+	},
+
+	//calculate the values equation
+	calculate: function() {
+		var answer = eval(this.state.text);
+		answer = answer.toString();
+		this.setState({
+			text: answer
+		});
+	},
+
+	backSpace: function() {
+		if (this.state.text.length > 1) {
+			this.setState({
+				text: this.state.text.slice(0, -1),
+			});
+		} else {
+			this.setState({
+				dirty: '0',
+				text: '0'
+			});
+		}
+	},
+
+	clear: function() {
+		this.setState({
+			dirty: '0',
+			text: 0,
+		});
+	},
+
+	render: function() {
+		return (
+			 <div>
+				<Display text={this.state.text} />
+				<Inputs 
+					updateValues={this.updateValues}
+					calculate={this.calculate}
+					backSpace={this.backSpace}
+					clear={this.clear}/>
+			</div>
+		);
+	}
+});
+
+ReactDOM.render(<Calculator />, document.getElementById('content'));
+
+</script>
+</body>
+</html>
